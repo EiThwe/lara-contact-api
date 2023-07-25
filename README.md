@@ -52,3 +52,35 @@ Arguments  |  Type  |  Description
 name      | string | **Required** Chit Chit
 country_code      | string | **Required** 95
 phone_number   | string | **Required** 96996996
+
+__Update Contact__ `PUT`
+
+```
+ http://127.0.0.1:8000/api/v1/contact/:id
+```
+
+Arguments  |  Type  |  Description
+-----------|--------|-------------
+name      | string | **Required** Chit Chit
+country_code      | string | **Required** 95
+phone_number   | string | **Required** 96996996
+
+__Delete Contact__ `DELETE`
+
+```
+ http://127.0.0.1:8000/api/v1/contact/:id
+```
+
+### Profile
+
+__All Devices__ `GET`
+
+```
+ http://127.0.0.1:8000/api/v1/devices
+```
+
+__Logout All Devices__ `GET`
+
+```
+ http://127.0.0.1:8000/api/v1/logout-all
+```
