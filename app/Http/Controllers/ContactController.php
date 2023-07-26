@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ContactDetailResource;
 use App\Http\Resources\ContactResource;
 use App\Models\Contact;
+use App\Models\SearchRecord;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
@@ -16,7 +19,22 @@ class ContactController extends Controller
     public function index()
     {
 
-        $contacts = Contact::latest("id")->paginate(5)->withQueryString();
+        $contacts = Contact::when(request()->has("keyword"), function ($query) {
+            $query->where(function (Builder $builder) {
+                $keyword = request()->keyword;
+                $builder->where("name", "like", "%" . $keyword . "%");
+                $builder->orWhere("phone_number", "like", "%" . $keyword . "%");
+
+                $isExist = SearchRecord::where("keyword", $keyword)->get();
+
+                if (!$isExist) {
+                    SearchRecord::create([
+                        "keyword" => $keyword,
+                        "user_id" => Auth::id()
+                    ]);
+                }
+            });
+        })->latest("id")->paginate(5)->withQueryString();
         return ContactResource::collection($contacts);
     }
 
@@ -81,6 +99,7 @@ class ContactController extends Controller
                 // "error" =>"content not found"
             ], 404);
         }
+        $this->authorize("update", $contact);
         // $contact->update([
         //     "name" => $request->name,
         //     "country_code" => $request->country_code,
@@ -96,6 +115,8 @@ class ContactController extends Controller
         if ($request->has("phone_number")) {
             $contact->phone_number = $request->phone_number;
         }
+
+        $contact->update();
 
         return new ContactDetailResource($contact);
     }
@@ -113,6 +134,8 @@ class ContactController extends Controller
                 // "error" =>"content not found"
             ], 404);
         }
+        $this->authorize("delete", $contact);
+
         $contact->delete();
         // return response()->json([], 204);
 

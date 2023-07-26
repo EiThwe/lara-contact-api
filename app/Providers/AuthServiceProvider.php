@@ -5,7 +5,9 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Contact;
+use App\Models\SearchRecord;
 use App\Policies\ContactPolicy;
+use App\Policies\SearchRecordPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Contact::class => ContactPolicy::class,
+        SearchRecord::class => SearchRecordPolicy::class,
     ];
 
     /**

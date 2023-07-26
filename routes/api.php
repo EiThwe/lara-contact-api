@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FavouriteController;
+use App\Http\Controllers\SearchRecordController;
 use App\Http\Middleware\ApiTokenCheck;
+use App\Models\SearchRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Spatie\FlareClient\Api;
@@ -25,6 +28,8 @@ use Spatie\FlareClient\Api;
 Route::prefix("v1")->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource("contact", ContactController::class);
+        Route::apiResource("search-records", SearchRecordController::class)->only(["index", "destroy"]);
+        Route::apiResource("favourites", FavouriteController::class)->only(["index", "store", "destroy"]);
         Route::post("logout", [ApiAuthController::class, "logout"]);
         Route::post("logout-all", [ApiAuthController::class, "logoutAll"]);
         Route::get("devices", [ApiAuthController::class, "devices"]);
