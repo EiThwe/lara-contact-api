@@ -1,7 +1,7 @@
 # Laraval Contact Api
 
 ## Api Reference
-_All api services need bearer_token to access_
+_All contact api services need bearer_token to access_
 
 ### Authentication
 
@@ -126,4 +126,22 @@ __Delete Favourite__ `DELETE`
 
 ```
  http://127.0.0.1:8000/api/v1/favourites/{id}
+```
+
+### Soft Delete  
+
+__Force Delete__ `DELETE`  
+
+```
+ http://127.0.0.1:8000/api/v1/force-delete/{id}
+```
+__Restore__ `POST`  
+
+```
+ http://127.0.0.1:8000/api/v1/restore/{id}
+```
+__Restore All__ `POST`  
+
+```
+ http://127.0.0.1:8000/api/v1/restore-all
 ```
