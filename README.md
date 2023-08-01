@@ -135,6 +135,20 @@ __Force Delete__ `DELETE`
 ```
  http://127.0.0.1:8000/api/v1/force-delete/{id}
 ```
+__Multiple Delete__ `DELETE`  
+
+```
+ http://127.0.0.1:8000/api/v1/bulk-delete
+```
+Arguments  |  Type  |  Description
+-----------|--------|-------------
+ids      | array | [1,2,3]
+
+__Force Delete All__ `DELETE`  
+
+```
+ http://127.0.0.1:8000/api/v1/force-delete-all
+```
 __Restore__ `POST`  
 
 ```
