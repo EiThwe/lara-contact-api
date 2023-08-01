@@ -28,6 +28,11 @@ use Spatie\FlareClient\Api;
 Route::prefix("v1")->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource("contact", ContactController::class);
+        Route::get("contact-trash", [ContactController::class, "trash"]);
+        Route::delete("force-delete/{id}", [ContactController::class, "forceDelete"]);
+        Route::delete("force-delete-all", [ContactController::class, "forceDeleteAll"]);
+        Route::post("restore/{id}", [ContactController::class, "restore"]);
+        Route::post("restore-all", [ContactController::class, "restoreAll"]);
         Route::apiResource("search-records", SearchRecordController::class)->only(["index", "destroy"]);
         Route::apiResource("favourites", FavouriteController::class)->only(["index", "store", "destroy"]);
         Route::post("logout", [ApiAuthController::class, "logout"]);

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string("birthday")->nullable();
             $table->text("notes")->nullable();
             $table->string("photo")->default(config("info.contact_default_photo"));
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

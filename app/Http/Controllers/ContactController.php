@@ -143,4 +143,74 @@ class ContactController extends Controller
             "message" => "Contact is deleted",
         ]);
     }
+
+    public function trash()
+    {
+        $trash = Contact::onlyTrashed()->get();
+
+        return ContactResource::collection($trash);
+    }
+
+    public function restore($id)
+    {
+        $contact = Contact::onlyTrashed()->find($id);
+
+        if (is_null($contact)) {
+            return response()->json([
+
+                "message" => "Contact not found in trash",
+
+            ], 404);
+        }
+
+        $contact->restore();
+
+        return response()->json([
+
+            "message" => "Contact has been restored",
+
+        ], 200);
+    }
+
+    public function restoreAll()
+    {
+        $contacts = Contact::onlyTrashed()->restore();
+
+        // if (is_null($contacts)) {
+        //     return response()->json([
+        //         // "success" => false,
+        //         "message" => "There is no contact in trash",
+        //         // "error" =>"content not found"
+        //     ], 404);
+        // }
+
+        // $contacts->restore();
+
+        return response()->json([
+
+            "message" => "Contacts have been restored",
+
+        ], 200);
+    }
+
+    public function forceDelete($id)
+    {
+        $contact = Contact::onlyTrashed()->find($id);
+
+        if (is_null($contact)) {
+            return response()->json([
+                // "success" => false,
+                "message" => "Contact not found in trash",
+                // "error" =>"content not found"
+            ], 404);
+        }
+
+        $contact->forceDelete();
+
+        return response()->json([
+
+            "message" => "Contact is permanently deleted",
+
+        ], 200);
+    }
 }

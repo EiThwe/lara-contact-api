@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ContactDetailResource;
+use App\Http\Resources\ContactResource;
 use App\Models\Favourite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +15,14 @@ class FavouriteController extends Controller
      */
     public function index()
     {
-        //
+       $favourites= Favourite::latest("id")->paginate(10)->withQueryString();
+       $data = [];
+       foreach($favourites as $favourite){
+        array_push($data,["contact"=> new ContactResource($favourite->contact)]);
+       }
+       return response()->json([
+        'data'=>$data
+       ]);
     }
 
     /**
@@ -24,18 +33,17 @@ class FavouriteController extends Controller
         $request->validate([
             "contact_id" => "required|exists:contacts,id"
         ]);
-        $isExist = Favourite::where("contact_id",$request->contact_id)->where("user_id",Auth::id());
+        $isExist = Favourite::where("contact_id", $request->contact_id)->where("user_id", Auth::id())->first();
 
-       if(!$isExist){
+        if ($isExist) {
+            return response()->json([
+                "message" => "Contact is already in favourites",
+            ]);
+        }
         $favourite = Favourite::create([
             "contact_id" => $request->contact_id,
             "user_id" => Auth::id()
         ]);
-       }else{
-        return response()->json([
-            "message" => "Contact is already in favourites",
-        ]);
-       }
 
         return response()->json([
             "message" => "Contact is added in favourites",
@@ -63,6 +71,19 @@ class FavouriteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+       $favourite_contact = Favourite::find($id);
+       if(is_null($favourite_contact)){
+        return response()->json([
+            // "success" => false,
+            "message" => "Contact not found",
+            // "error" =>"content not found"
+        ], 404);
+       }
+       $favourite_contact->delete();
+       // return response()->json([], 204);
+
+       return response()->json([
+           "message" => "Contact is deleted",
+       ]);
     }
 }
