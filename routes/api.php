@@ -29,6 +29,7 @@ Route::prefix("v1")->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource("contact", ContactController::class);
         Route::get("contact-trash", [ContactController::class, "trash"]);
+        Route::delete("bulk-delete", [ContactController::class, "bulkDelete"]);
         Route::delete("force-delete/{id}", [ContactController::class, "forceDelete"]);
         Route::delete("force-delete-all", [ContactController::class, "forceDeleteAll"]);
         Route::post("restore/{id}", [ContactController::class, "restore"]);

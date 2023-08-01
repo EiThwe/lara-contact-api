@@ -6,10 +6,15 @@ use App\Http\Resources\ContactDetailResource;
 use App\Http\Resources\ContactResource;
 use App\Models\Contact;
 use App\Models\SearchRecord;
+use Dotenv\Repository\RepositoryInterface;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
+
+use function PHPUnit\Framework\isEmpty;
 
 class ContactController extends Controller
 {
@@ -212,5 +217,29 @@ class ContactController extends Controller
             "message" => "Contact is permanently deleted",
 
         ], 200);
+    }
+    public function forceDeleteAll()
+    {
+        Contact::onlyTrashed()->forceDelete();
+
+        return response()->json([
+
+            "message" => "Contact are permanently deleted",
+
+        ], 200);
+    }
+    public function bulkDelete(Request $request)
+    {
+        try {
+            Contact::destroy($request->ids);
+            return response()->json([
+                "message" => "Contacts are moved to trash",
+
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "message" => "Contacts not found"
+            ], 404);
+        }
     }
 }
